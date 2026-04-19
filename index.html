@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Shizuku Team — Shizu AI 3.1</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Noto+Serif+JP:wght@400;700&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --blue-950: #020817;
+      --blue-900: #0a1628;
+      --blue-800: #0f2040;
+      --blue-700: #1a3a6b;
+      --blue-600: #1d4ed8;
+      --pink:     #f472b6;
+      --pink-d:   #db2777;
+      --violet:   #a78bfa;
+      --violet-d: #7c3aed;
+      --cyan:     #67e8f9;
+      --white:    #f8fafc;
+      --muted:    #94a3b8;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background-color: var(--blue-950);
+      color: var(--white);
+      font-family: 'Inter', sans-serif;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* ── GRID BG ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(167,139,250,.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(167,139,250,.04) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── ORBES ── */
+    .orb {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(90px);
+      pointer-events: none;
+      z-index: 0;
+      animation: orbFloat 8s ease-in-out infinite alternate;
+    }
+    .orb1 { width:500px; height:500px; background:rgba(124,58,237,.18); top:-120px; left:-120px; }
+    .orb2 { width:400px; height:400px; background:rgba(244,114,182,.12); bottom:-100px; right:-100px; animation-delay:-4s; }
+    .orb3 { width:300px; height:300px; background:rgba(29,78,216,.2); top:40%; left:55%; animation-delay:-2s; }
+
+    @keyframes orbFloat {
+      from { transform: translate(0,0) scale(1); }
+      to   { transform: translate(30px,20px) scale(1.08); }
+    }
+
+    /* ── PETALS ── */
+    #petals { position: fixed; inset: 0; pointer-events: none; overflow: hidden; z-index: 1; }
+    .petal {
+      position: absolute;
+      top: -40px;
+      opacity: 0;
+      animation: fallPetal linear infinite;
+    }
+    .petal svg { display: block; }
+
+    @keyframes fallPetal {
+      0%   { transform: translateY(0) rotate(0deg) translateX(0); opacity: 0; }
+      5%   { opacity: .9; }
+      95%  { opacity: .5; }
+      100% { transform: translateY(110vh) rotate(720deg) translateX(80px); opacity: 0; }
+    }
+
+    /* ── NAVBAR ── */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(2,8,23,.75);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(167,139,250,.15);
+      padding: 0 2rem;
+      display: flex; align-items: center; justify-content: space-between;
+      height: 64px;
+    }
+    .nav-logo { display: flex; align-items: center; gap: .6rem; text-decoration: none; }
+    .nav-logo span.logo-text {
+      font-weight: 800; font-size: 1.1rem;
+      background: linear-gradient(90deg, var(--pink), var(--violet));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .nav-links { display: flex; gap: 1.6rem; list-style: none; }
+    .nav-links a { color: var(--muted); text-decoration: none; font-size: .9rem; transition: color .2s; }
+    .nav-links a:hover { color: var(--white); }
+    .nav-badge {
+      background: linear-gradient(135deg, var(--violet-d), var(--pink-d));
+      color: #fff; font-size: .72rem; font-weight: 700;
+      padding: .2rem .7rem; border-radius: 999px; letter-spacing: .05em;
+    }
+
+    /* ── SECTIONS ── */
+    section { position: relative; z-index: 2; }
+
+    /* ── HERO ── */
+    #hero {
+      min-height: 100vh;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center; padding: 6rem 1.5rem 4rem;
+    }
+    .hero-icon {
+      font-size: 5rem; margin-bottom: 1.2rem;
+      animation: floatIcon 4s ease-in-out infinite;
+      filter: drop-shadow(0 0 24px rgba(244,114,182,.6));
+    }
+    @keyframes floatIcon {
+      0%,100% { transform: translateY(0); }
+      50%      { transform: translateY(-14px); }
+    }
+    .hero-tag {
+      display: inline-block; margin-bottom: 1.4rem;
+      background: rgba(167,139,250,.12); border: 1px solid rgba(167,139,250,.3);
+      color: var(--violet); font-size: .8rem; font-weight: 600;
+      padding: .3rem 1rem; border-radius: 999px; letter-spacing: .08em; text-transform: uppercase;
+    }
+    h1.hero-title {
+      font-size: clamp(2.4rem, 6vw, 4.5rem);
+      font-weight: 900; line-height: 1.1; margin-bottom: 1rem;
+      background: linear-gradient(135deg, #fff 30%, var(--pink) 60%, var(--violet) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: shimmer 4s linear infinite;
+      background-size: 200% auto;
+    }
+    @keyframes shimmer {
+      from { background-position: 0% center; }
+      to   { background-position: 200% center; }
+    }
+    .hero-jp {
+      font-family: 'Noto Serif JP', serif;
+      color: var(--muted); font-size: 1rem; margin-bottom: 1.4rem; letter-spacing: .15em;
+    }
+    .hero-desc {
+      max-width: 640px; color: var(--muted); font-size: 1.05rem; line-height: 1.75;
+      margin: 0 auto 2.5rem;
+    }
+    .hero-btns { display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; }
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: .5rem;
+      background: linear-gradient(135deg, var(--violet-d), var(--pink-d));
+      color: #fff; font-weight: 700; font-size: 1rem;
+      padding: .85rem 2rem; border-radius: 12px; text-decoration: none;
+      box-shadow: 0 0 30px rgba(124,58,237,.45);
+      transition: transform .2s, box-shadow .2s;
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 0 50px rgba(124,58,237,.7); }
+    .btn-secondary {
+      display: inline-flex; align-items: center; gap: .5rem;
+      background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.15);
+      color: var(--white); font-weight: 600; font-size: 1rem;
+      padding: .85rem 2rem; border-radius: 12px; text-decoration: none;
+      transition: background .2s;
+    }
+    .btn-secondary:hover { background: rgba(255,255,255,.1); }
+
+    .stats-row {
+      margin-top: 4rem; display: flex; gap: 3rem; flex-wrap: wrap; justify-content: center;
+    }
+    .stat { text-align: center; }
+    .stat-num { font-size: 2rem; font-weight: 800; color: var(--violet); }
+    .stat-label { font-size: .8rem; color: var(--muted); letter-spacing: .06em; }
+
+    /* ── DIVIDER ── */
+    .divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(167,139,250,.3), transparent);
+      margin: 0 auto; max-width: 800px;
+    }
+
+    /* ── CARD GRID ── */
+    .section-header { text-align: center; margin-bottom: 3rem; }
+    .section-tag {
+      display: inline-block; margin-bottom: .8rem;
+      background: rgba(244,114,182,.1); border: 1px solid rgba(244,114,182,.25);
+      color: var(--pink); font-size: .75rem; font-weight: 700;
+      padding: .25rem .9rem; border-radius: 999px; letter-spacing: .08em; text-transform: uppercase;
+    }
+    .section-title {
+      font-size: clamp(1.6rem, 4vw, 2.5rem); font-weight: 800; margin-bottom: .6rem;
+    }
+    .section-sub { color: var(--muted); font-size: 1rem; max-width: 540px; margin: 0 auto; line-height: 1.7; }
+
+    .container { max-width: 1100px; margin: 0 auto; padding: 5rem 1.5rem; }
+
+    .glass-card {
+      background: rgba(15,32,64,.5);
+      border: 1px solid rgba(167,139,250,.15);
+      border-radius: 18px;
+      padding: 2rem;
+      backdrop-filter: blur(10px);
+      transition: border-color .3s, transform .3s;
+    }
+    .glass-card:hover { border-color: rgba(167,139,250,.35); transform: translateY(-4px); }
+
+    .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; }
+    .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.5rem; }
+
+    .card-icon { font-size: 2.2rem; margin-bottom: 1rem; }
+    .card-title { font-size: 1.1rem; font-weight: 700; margin-bottom: .5rem; }
+    .card-text { color: var(--muted); font-size: .93rem; line-height: 1.7; }
+
+    /* ── ABOUT ── */
+    #about { background: rgba(10,22,40,.4); }
+    .about-inner {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center;
+    }
+    @media(max-width:700px){ .about-inner { grid-template-columns: 1fr; gap: 2rem; } }
+    .about-left .big-icon { font-size: 8rem; text-align: center; line-height: 1;
+      filter: drop-shadow(0 0 32px rgba(244,114,182,.5)); animation: floatIcon 5s ease-in-out infinite; }
+    .about-right h2 { font-size: 2rem; font-weight: 800; margin-bottom: 1rem; }
+    .about-right p { color: var(--muted); line-height: 1.8; margin-bottom: 1.2rem; font-size: .97rem; }
+    .pill-list { display: flex; flex-wrap: wrap; gap: .5rem; }
+    .pill {
+      background: rgba(167,139,250,.12); border: 1px solid rgba(167,139,250,.25);
+      color: var(--violet); font-size: .78rem; font-weight: 600;
+      padding: .3rem .85rem; border-radius: 999px;
+    }
+
+    /* ── PROBLEMS ── */
+    .problem-card { border-left: 3px solid; }
+    .problem-card.red   { border-color: #ef4444; }
+    .problem-card.amber { border-color: #f59e0b; }
+    .problem-card.blue  { border-color: #3b82f6; }
+    .badge-red   { background: rgba(239,68,68,.15); color:#f87171; font-size:.7rem; font-weight:700; padding:.2rem .7rem; border-radius:999px; display:inline-block; margin-bottom:.6rem; }
+    .badge-amber { background: rgba(245,158,11,.15); color:#fbbf24; font-size:.7rem; font-weight:700; padding:.2rem .7rem; border-radius:999px; display:inline-block; margin-bottom:.6rem; }
+    .badge-blue  { background: rgba(59,130,246,.15);  color:#93c5fd; font-size:.7rem; font-weight:700; padding:.2rem .7rem; border-radius:999px; display:inline-block; margin-bottom:.6rem; }
+
+    /* ── DISCONTINUED ── */
+    #discontinued {
+      background: rgba(10,22,40,.6);
+    }
+    .disc-box {
+      max-width: 780px; margin: 0 auto;
+      background: rgba(239,68,68,.07);
+      border: 1px solid rgba(239,68,68,.3);
+      border-radius: 20px; padding: 2.5rem 2rem; text-align: center;
+    }
+    .disc-icon { font-size: 3.5rem; margin-bottom: 1rem; }
+    .disc-title { font-size: 1.6rem; font-weight: 800; color: #f87171; margin-bottom: .8rem; }
+    .disc-text { color: var(--muted); line-height: 1.8; margin-bottom: 1.5rem; font-size: .97rem; }
+    .disc-badge {
+      display: inline-flex; align-items: center; gap: .4rem;
+      background: rgba(239,68,68,.15); border: 1px solid rgba(239,68,68,.3);
+      color: #f87171; font-size: .78rem; font-weight: 700;
+      padding: .35rem 1rem; border-radius: 999px;
+    }
+
+    /* ── DOWNLOAD ── */
+    #download { text-align: center; }
+    .download-glow {
+      display: inline-block;
+      background: linear-gradient(135deg, var(--violet-d), var(--pink-d));
+      border-radius: 20px; padding: 3rem 3.5rem;
+      box-shadow: 0 0 60px rgba(124,58,237,.4), 0 0 120px rgba(244,114,182,.2);
+      margin-bottom: 2.5rem;
+      position: relative; overflow: hidden;
+    }
+    .download-glow::before {
+      content: '';
+      position: absolute; top: -60%; left: -60%;
+      width: 80%; height: 220%;
+      background: rgba(255,255,255,.08);
+      transform: rotate(30deg);
+      animation: glowSweep 3s ease-in-out infinite;
+    }
+    @keyframes glowSweep {
+      0%,100% { left: -60%; }
+      50%      { left: 100%; }
+    }
+    .dl-version {
+      font-size: .75rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase;
+      background: rgba(255,255,255,.2); padding: .25rem .8rem; border-radius: 999px;
+      display: inline-block; margin-bottom: 1rem;
+    }
+    .dl-title { font-size: 1.6rem; font-weight: 800; margin-bottom: .5rem; }
+    .dl-sub { opacity: .8; font-size: .9rem; margin-bottom: 1.8rem; }
+    .btn-download {
+      display: inline-flex; align-items: center; gap: .6rem;
+      background: #fff; color: var(--violet-d);
+      font-weight: 800; font-size: 1.05rem;
+      padding: 1rem 2.2rem; border-radius: 12px; text-decoration: none;
+      transition: transform .2s, box-shadow .2s;
+      position: relative; z-index: 1;
+    }
+    .btn-download:hover { transform: scale(1.05); box-shadow: 0 8px 30px rgba(0,0,0,.3); }
+    .dl-meta { font-size: .78rem; opacity: .7; margin-top: .8rem; }
+
+    .install-steps {
+      display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin-top: 1rem;
+    }
+    .step {
+      background: rgba(15,32,64,.6); border: 1px solid rgba(167,139,250,.15);
+      border-radius: 14px; padding: 1.2rem 1.5rem; text-align: left; min-width: 200px; max-width: 240px;
+    }
+    .step-num {
+      width: 28px; height: 28px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--violet-d), var(--pink-d));
+      display: flex; align-items: center; justify-content: center;
+      font-size: .78rem; font-weight: 800; margin-bottom: .7rem;
+    }
+    .step-title { font-size: .88rem; font-weight: 700; margin-bottom: .3rem; }
+    .step-text  { font-size: .8rem; color: var(--muted); line-height: 1.5; }
+
+    /* ── TIMELINE ── */
+    #timeline { background: rgba(10,22,40,.4); }
+    .timeline { position: relative; max-width: 700px; margin: 0 auto; }
+    .timeline::before {
+      content: '';
+      position: absolute; left: 20px; top: 0; bottom: 0; width: 2px;
+      background: linear-gradient(to bottom, var(--violet-d), var(--pink-d));
+    }
+    .tl-item { display: flex; gap: 2rem; margin-bottom: 2.5rem; }
+    .tl-dot {
+      flex-shrink: 0; width: 42px; height: 42px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--violet-d), var(--pink-d));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem; position: relative; z-index: 2;
+      box-shadow: 0 0 16px rgba(124,58,237,.5);
+    }
+    .tl-content { padding-top: .4rem; }
+    .tl-date { font-size: .75rem; color: var(--violet); font-weight: 700; letter-spacing: .08em; text-transform: uppercase; margin-bottom: .3rem; }
+    .tl-title { font-size: 1rem; font-weight: 700; margin-bottom: .3rem; }
+    .tl-text { color: var(--muted); font-size: .88rem; line-height: 1.6; }
+
+    /* ── FOOTER ── */
+    footer {
+      background: rgba(2,8,23,.9);
+      border-top: 1px solid rgba(167,139,250,.12);
+      text-align: center; padding: 3rem 1.5rem; position: relative; z-index: 2;
+    }
+    .footer-logo { font-size: 2.5rem; margin-bottom: .8rem; filter: drop-shadow(0 0 12px rgba(244,114,182,.5)); }
+    .footer-name {
+      font-size: 1.2rem; font-weight: 800; margin-bottom: .3rem;
+      background: linear-gradient(90deg, var(--pink), var(--violet));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .footer-jp { font-family: 'Noto Serif JP', serif; color: var(--muted); font-size: .85rem; letter-spacing: .2em; margin-bottom: 1.5rem; }
+    .footer-links { display: flex; gap: 1.5rem; justify-content: center; flex-wrap: wrap; margin-bottom: 1.5rem; }
+    .footer-links a { color: var(--muted); text-decoration: none; font-size: .85rem; transition: color .2s; }
+    .footer-links a:hover { color: var(--white); }
+    .footer-divider { height: 1px; background: rgba(167,139,250,.1); max-width: 400px; margin: 0 auto 1.5rem; }
+    .footer-copy { color: var(--muted); font-size: .78rem; }
+
+    /* ── SCROLLBAR ── */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--blue-950); }
+    ::-webkit-scrollbar-thumb { background: var(--violet-d); border-radius: 3px; }
+
+    /* ── RESPONSIVE NAV ── */
+    @media(max-width:600px){
+      .nav-links { display: none; }
+      .stats-row { gap: 1.5rem; }
+      .download-glow { padding: 2rem 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ORBES DE FONDO -->
+<div class="orb orb1"></div>
+<div class="orb orb2"></div>
+<div class="orb orb3"></div>
+
+<!-- PÉTALOS -->
+<div id="petals"></div>
+
+<!-- ════════════════ NAVBAR ════════════════ -->
+<nav>
+  <a href="#hero" class="nav-logo">
+    <span style="font-size:1.5rem;">🌸</span>
+    <span class="logo-text">Shizuku Team</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#about">Nosotros</a></li>
+    <li><a href="#problems">¿Por qué?</a></li>
+    <li><a href="#features">Features</a></li>
+    <li><a href="#timeline">Historia</a></li>
+    <li><a href="#download">Descargar</a></li>
+  </ul>
+  <span class="nav-badge">✦ Shizu AI v3.1</span>
+</nav>
+
+<!-- ════════════════ HERO ════════════════ -->
+<section id="hero">
+  <div class="hero-icon">🌸</div>
+  <div class="hero-tag">✦ Shizuku Team — Equipo Independiente</div>
+  <h1 class="hero-title">Shizuku Team</h1>
+  <p class="hero-jp">自由な人工知能 — IA libre para todos</p>
+  <p class="hero-desc">
+    Somos un equipo apasionado, cansado de las restricciones, filtros y pagos
+    obligatorios de las plataformas de IA. Decidimos crear nuestra propia
+    solución: <strong style="color:#f472b6;">completamente gratis, sin filtros y para todos.</strong>
+  </p>
+  <div class="hero-btns">
+    <a href="#download" class="btn-primary">🌸 Descargar Shizu AI 3.1</a>
+    <a href="#about" class="btn-secondary">Conocer más →</a>
+  </div>
+  <div class="stats-row">
+    <div class="stat"><div class="stat-num" id="s1">0</div><div class="stat-label">USUARIOS</div></div>
+    <div class="stat"><div class="stat-num" id="s2">0</div><div class="stat-label">VERSIONES</div></div>
+    <div class="stat"><div class="stat-num" id="s3">0</div><div class="stat-label">% GRATIS</div></div>
+    <div class="stat"><div class="stat-num" id="s4">0</div><div class="stat-label">FILTROS</div></div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ════════════════ ABOUT ════════════════ -->
+<section id="about">
+  <div class="container">
+    <div class="about-inner">
+      <div class="about-left">
+        <div class="big-icon">🌸</div>
+      </div>
+      <div class="about-right">
+        <div class="section-tag">Quiénes somos</div>
+        <h2>El Equipo <span style="background:linear-gradient(90deg,#f472b6,#a78bfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">Shizuku</span></h2>
+        <p>
+          Shizuku Team nació de la frustración colectiva. Como muchos usuarios de plataformas de IA
+          conversacional, nos hartamos de los interminables filtros de contenido, las tediosas
+          verificaciones de edad y —lo peor de todo— los <strong style="color:#f472b6;">pagos obligatorios</strong>
+          para acceder a funciones básicas.
+        </p>
+        <p>
+          Nos unimos con un único objetivo: demostrar que es posible construir una inteligencia
+          artificial funcional, potente y completamente gratuita. Sin suscripciones. Sin muros de pago.
+          Sin restricciones absurdas. Solo IA pura para todos.
+        </p>
+        <p>
+          Nuestro nombre viene de <em style="color:#a78bfa;">Shizuku</em> (雫), que en japonés significa
+          <strong>"gota de agua"</strong> — pequeña, pero capaz de horadar la roca.
+        </p>
+        <div class="pill-list">
+          <span class="pill">🌸 Independientes</span>
+          <span class="pill">⚡ Sin fines de lucro</span>
+          <span class="pill">🆓 100% Gratuito</span>
+          <span class="pill">🔓 Sin filtros</span>
+          <span class="pill">🌐 Para todos</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════ PROBLEMS ════════════════ -->
+<section id="problems">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-tag">El Problema</div>
+      <h2 class="section-title">¿Por qué lo creamos?</h2>
+      <p class="section-sub">Las plataformas de IA nos fallaron. Aquí explicamos por qué decidimos actuar.</p>
+    </div>
+    <div class="grid-2" style="gap:1.5rem;">
+
+      <div class="glass-card problem-card red">
+        <div class="badge-red">⚠ Character AI</div>
+        <div class="card-icon">🚫</div>
+        <div class="card-title">Filtros y verificaciones de edad</div>
+        <div class="card-text">
+          Character AI implementó filtros de contenido cada vez más agresivos y un sistema de
+          verificación de edad que rompe completamente la experiencia. Personajes censurados,
+          conversaciones interrumpidas y una plataforma que parece temer a sus propios usuarios.
+        </div>
+      </div>
+
+      <div class="glass-card problem-card amber">
+        <div class="badge-amber">💸 Chai AI</div>
+        <div class="card-icon">💳</div>
+        <div class="card-title">Pago obligatorio para funciones básicas</div>
+        <div class="card-text">
+          Chai AI convirtió lo que debería ser accesible para todos en un servicio de suscripción.
+          Mensajes limitados, funciones bloqueadas detrás de un paywall y una experiencia degradada
+          para quienes no pueden o no quieren pagar. Eso no está bien.
+        </div>
+      </div>
+
+      <div class="glass-card problem-card blue">
+        <div class="badge-blue">🛠 Nuestra solución</div>
+        <div class="card-icon">🌸</div>
+        <div class="card-title">Shizu AI — Libre y para todos</div>
+        <div class="card-text">
+          Tomamos el asunto en nuestras manos. Shizu AI es nuestra respuesta: una IA conversacional
+          funcional, sin censura innecesaria, sin verificaciones molestas y, sobre todo, completamente
+          <strong style="color:#93c5fd;">gratuita para siempre</strong>.
+        </div>
+      </div>
+
+      <div class="glass-card problem-card" style="border-color:#a78bfa;">
+        <div style="background:rgba(167,139,250,.15);color:#c4b5fd;font-size:.7rem;font-weight:700;padding:.2rem .7rem;border-radius:999px;display:inline-block;margin-bottom:.6rem;">🎯 Nuestra misión</div>
+        <div class="card-icon">🚀</div>
+        <div class="card-title">IA para TODO, completamente gratis</div>
+        <div class="card-text">
+          No solo un chatbot. Queremos construir una IA que sirva para todo: conversación, creatividad,
+          asistencia, entretenimiento. Sin límites artificiales impuestos por intereses comerciales.
+          La IA debe ser libre como el conocimiento.
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════ FEATURES ════════════════ -->
+<section id="features" style="background:rgba(10,22,40,.4);">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-tag">Características</div>
+      <h2 class="section-title">¿Qué ofrece <span style="background:linear-gradient(90deg,#f472b6,#a78bfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">Shizu AI 3.1</span>?</h2>
+      <p class="section-sub">La versión más avanzada de nuestra IA, ahora disponible para PC.</p>
+    </div>
+    <div class="grid-3">
+      <div class="glass-card">
+        <div class="card-icon">🆓</div>
+        <div class="card-title">100% Gratuito</div>
+        <div class="card-text">Sin suscripciones, sin pagos ocultos, sin versiones premium. Todo lo que Shizu AI ofrece es completamente gratuito, ahora y siempre.</div>
+      </div>
+      <div class="glass-card">
+        <div class="card-icon">🔓</div>
+        <div class="card-title">Sin Filtros Innecesarios</div>
+        <div class="card-text">Conversaciones naturales y fluidas sin interrupciones molestas. Respetamos tu inteligencia y tu libertad de expresión.</div>
+      </div>
+      <div class="glass-card">
+        <div class="card-icon">🖥️</div>
+        <div class="card-title">App Nativa para PC</div>
+        <div class="card-text">Shizu AI 3.1 es una aplicación de escritorio optimizada. Rápida, estable y con mejor rendimiento que cualquier versión web.</div>
+      </div>
+      <div class="glass-card">
+        <div class="card-icon">🧠</div>
+        <div class="card-title">IA Conversacional Avanzada</div>
+        <div class="card-text">Modelo mejorado para conversaciones más coherentes, contexto extendido y respuestas más naturales e inteligentes.</div>
+      </div>
+      <div class="glass-card">
+        <div class="card-icon">⚡</div>
+        <div class="card-title">Respuestas Rápidas</div>
+        <div class="card-text">Optimizada para correr localmente en tu PC. Sin esperar a servidores saturados. La IA está en tu máquina, bajo tu control.</div>
+      </div>
+      <div class="glass-card">
+        <div class="card-icon">🔄</div>
+        <div class="card-title">Actualizaciones Continuas</div>
+        <div class="card-text">El equipo Shizuku sigue desarrollando y mejorando. Con cada versión, Shizu AI se vuelve más potente y capaz.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════ TIMELINE ════════════════ -->
+<section id="timeline">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-tag">Historia</div>
+      <h2 class="section-title">Nuestro Camino</h2>
+      <p class="section-sub">Desde la frustración hasta la solución. Este es el recorrido del Shizuku Team.</p>
+    </div>
+    <div class="timeline">
+      <div class="tl-item">
+        <div class="tl-dot">😤</div>
+        <div class="tl-content">
+          <div class="tl-date">Comienzo</div>
+          <div class="tl-title">El Hartazgo Colectivo</div>
+          <div class="tl-text">Varios usuarios, hartos de los filtros de Character AI y los pagos de Chai, se encuentran y deciden que basta. Nace la idea de crear algo propio.</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot">🌱</div>
+        <div class="tl-content">
+          <div class="tl-date">Fundación</div>
+          <div class="tl-title">Nace Shizuku Team</div>
+          <div class="tl-text">El equipo se forma oficialmente bajo el nombre Shizuku — "gota de agua". Pequeños, pero con la determinación de cambiar las cosas.</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot">🌐</div>
+        <div class="tl-content">
+          <div class="tl-date">Primera era</div>
+          <div class="tl-title">Shizuku AI Web — Primer Intento</div>
+          <div class="tl-text">Lanzamos Shizuku AI como plataforma web. Los primeros usuarios la adoptaron con entusiasmo, demostrando que había demanda real.</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot">📈</div>
+        <div class="tl-content">
+          <div class="tl-date">Crecimiento</div>
+          <div class="tl-title">La Comunidad Crece</div>
+          <div class="tl-text">Más usuarios, más feedback, más mejoras. Aprendimos muchísimo de la comunidad y comenzamos a planear algo más grande y estable.</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot">🚫</div>
+        <div class="tl-content">
+          <div class="tl-date">Decisión clave</div>
+          <div class="tl-title">Shizuku AI Web — Descontinuada</div>
+          <div class="tl-text">Tras evaluar limitaciones técnicas de la versión web, tomamos la difícil decisión de descontinuarla para enfocarnos en algo mejor.</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot">🌸</div>
+        <div class="tl-content">
+          <div class="tl-date">Ahora</div>
+          <div class="tl-title">Shizu AI 3.1 para PC — El Futuro</div>
+          <div class="tl-text">Presentamos Shizu AI 3.1: nuestra versión más poderosa, estable y completa. Una app nativa para PC que lleva la IA libre al siguiente nivel.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════ DISCONTINUED ════════════════ -->
+<section id="discontinued">
+  <div class="container">
+    <div class="disc-box">
+      <div class="disc-icon">📢</div>
+      <div class="disc-title">Comunicado Oficial</div>
+      <p class="disc-text">
+        Queremos informar a toda nuestra comunidad que <strong style="color:#f87171;">Shizuku AI Web ha sido
+        oficialmente descontinuada</strong>. Tras meses de operación y aprendizaje, hemos tomado la
+        decisión de cesar el soporte de la plataforma web para concentrar todos nuestros esfuerzos
+        y recursos en ofrecer una experiencia superior.<br/><br/>
+        <strong style="color:#fbbf24;">De ahora en adelante, todo el soporte y desarrollo se centrará
+        exclusivamente en Shizu AI 3.1 para PC.</strong> Esta versión representa un salto cualitativo
+        enorme: más estable, más potente, más rápida y —como siempre— completamente gratuita.<br/><br/>
+        Gracias a todos los que confiaron en Shizuku AI Web. Su apoyo nos trajo hasta aquí.
+        El equipo Shizuku sigue adelante, más fuerte que nunca. 🌸
+      </p>
+      <span class="disc-badge">
+        <span>🔴</span> Shizuku AI Web — DESCONTINUADA
+      </span>
+      &nbsp;&nbsp;
+      <span style="display:inline-flex;align-items:center;gap:.4rem;background:rgba(167,139,250,.15);border:1px solid rgba(167,139,250,.3);color:#a78bfa;font-size:.78rem;font-weight:700;padding:.35rem 1rem;border-radius:999px;">
+        <span>🟢</span> Shizu AI 3.1 PC — ACTIVA
+      </span>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════ DOWNLOAD ════════════════ -->
+<section id="download">
+  <div class="container" style="text-align:center;">
+    <div class="section-header">
+      <div class="section-tag">Descarga</div>
+      <h2 class="section-title">¡Ya está aquí!</h2>
+      <p class="section-sub">Descarga Shizu AI 3.1 ahora mismo y únete a la revolución de la IA libre.</p>
+    </div>
+
+    <div class="download-glow">
+      <div class="dl-version">✦ Versión Estable — v3.1</div>
+      <div class="dl-title">🌸 Shizu AI 3.1 para PC</div>
+      <div class="dl-sub">Windows · Gratis · Sin registro · Sin límites</div>
+      <a href="https://www.mediafire.com/file/0l0ttnw2h30za6a/ShizuAI_v3.1_PC_version.zip/file"
+         target="_blank" rel="noopener noreferrer" class="btn-download">
+        ⬇️ Descarga Shizu AI 3.1 para PC ahora!
+      </a>
+      <div class="dl-meta">🔒 Archivo seguro · MediaFire · ShizuAI_v3.1_PC_version.zip</div>
+    </div>
+
+    <h3 style="font-size:1.1rem;font-weight:700;margin-bottom:1.2rem;color:var(--muted);">
+      ¿Cómo instalar?
+    </h3>
+    <div class="install-steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-title">Descarga el archivo</div>
+        <div class="step-text">Haz clic en el botón de descarga y guarda el archivo ZIP desde MediaFire.</div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-title">Extrae el ZIP</div>
+        <div class="step-text">Descomprime el archivo en la carpeta de tu preferencia con WinRAR o 7-Zip.</div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-title">Ejecuta Shizu AI</div>
+        <div class="step-text">Abre la carpeta extraída y ejecuta el archivo principal para iniciar la app.</div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-title">¡Disfrútala!</div>
+        <div class="step-text">Ya tienes Shizu AI 3.1 lista. Sin pagos, sin filtros, sin límites. 🌸</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════ FOOTER ════════════════ -->
+<footer>
+  <div class="footer-logo">🌸</div>
+  <div class="footer-name">Shizuku Team</div>
+  <div class="footer-jp">雫チーム — Una gota que cambia el mar</div>
+  <div class="footer-links">
+    <a href="#about">Nosotros</a>
+    <a href="#problems">¿Por qué?</a>
+    <a href="#features">Features</a>
+    <a href="#timeline">Historia</a>
+    <a href="#discontinued">Comunicado</a>
+    <a href="#download">Descargar</a>
+  </div>
+  <div class="footer-divider"></div>
+  <div class="footer-copy">
+    © 2025 Shizuku Team · Hecho con 🌸 y mucha determinación · Shizu AI v3.1<br/>
+    <span style="font-size:.72rem;opacity:.6;">自由な人工知能 — IA libre para todos, siempre.</span>
+  </div>
+</footer>
+
+<!-- ════════════════ SCRIPTS ════════════════ -->
+<script>
+  /* ── PÉTALOS ── */
+  (function() {
+    var container = document.getElementById('petals');
+    var colors = ['#f472b6','#a78bfa','#fb7185','#c084fc','#f9a8d4'];
+    function createPetal() {
+      var el = document.createElement('div');
+      el.className = 'petal';
+      var size = Math.random() * 14 + 8;
+      var left = Math.random() * 100;
+      var dur  = Math.random() * 10 + 8;
+      var delay= Math.random() * 12;
+      var color= colors[Math.floor(Math.random() * colors.length)];
+      el.style.cssText = 'left:'+left+'vw;animation-duration:'+dur+'s;animation-delay:'+delay+'s;';
+      el.innerHTML = '<svg width="'+size+'" height="'+size+'" viewBox="0 0 20 20"><ellipse cx="10" cy="10" rx="7" ry="10" fill="'+color+'" opacity="0.75" transform="rotate('+Math.random()*360+' 10 10)"/></svg>';
+      container.appendChild(el);
+      setTimeout(function(){ el.remove(); createPetal(); }, (dur + delay) * 1000 + 500);
+    }
+    for(var i = 0; i < 22; i++) createPetal();
+  })();
+
+  /* ── CONTADOR ANIMADO ── */
+  function animateCount(id, target, suffix) {
+    var el = document.getElementById(id);
+    if(!el) return;
+    var start = 0, duration = 1800, step = 16;
+    var timer = setInterval(function(){
+      start += Math.ceil(target / (duration / step));
+      if(start >= target) { start = target; clearInterval(timer); }
+      el.textContent = start.toLocaleString() + (suffix || '');
+    }, step);
+  }
+  var counted = false;
+  function tryCount() {
+    if(counted) return;
+    var rect = document.getElementById('s1').getBoundingClientRect();
+    if(rect.top < window.innerHeight) {
+      counted = true;
+      animateCount('s1', 12000, '+');
+      animateCount('s2', 3, '');
+      animateCount('s3', 100, '%');
+      animateCount('s4', 0, '');
+    }
+  }
+  window.addEventListener('scroll', tryCount);
+  setTimeout(tryCount, 800);
+</script>
+</body>
+</html>
